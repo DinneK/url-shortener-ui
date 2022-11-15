@@ -1,29 +1,52 @@
-import React, { Component } from 'react';
-import './App.css';
-import { getUrls } from '../../apiCalls';
-import UrlContainer from '../UrlContainer/UrlContainer';
-import UrlForm from '../UrlForm/UrlForm';
+import React, { Component } from "react";
+import "./App.css";
+import { getUrls, postUrl } from "../../apiCalls";
+import UrlContainer from "../UrlContainer/UrlContainer";
+import UrlForm from "../UrlForm/UrlForm";
 
 export class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      urls: []
-    }
+      error: "",
+      urls: [],
+    };
   }
 
   componentDidMount() {
+    getUrls()
+      .then((data) => {
+        console.log({ data });
+        this.setState({
+          urls: data.urls,
+        });
+      })
+      .catch((error) => {
+        this.setState({
+          error: `Uh oh! That's a ${error}, please try again later!`,
+        });
+      });
   }
+
+  addUrl = (newUrl) => {
+    postUrl(newUrl)
+      .then((data) =>
+        this.setState({
+          urls: [...this.state.urls, newUrl],
+        })
+      )
+      .catch((error) => this.setState({ error: error }));
+    console.log(this.state.urls);
+  };
 
   render() {
     return (
       <main className="App">
         <header>
           <h1>URL Shortener</h1>
-          <UrlForm />
+          <UrlForm addUrl={this.addUrl} />
         </header>
-
-        <UrlContainer urls={this.state.urls}/>
+        <UrlContainer urls={this.state.urls} />
       </main>
     );
   }
