@@ -20,6 +20,7 @@ class UrlForm extends Component {
       id: Date.now(),
       title: this.state.title,
       long_url: this.state.long_url,
+      short_url: this.state.short_url,
     };
     console.log("Blarg", this.state.long_url);
     this.props.addUrl(newUrl);
